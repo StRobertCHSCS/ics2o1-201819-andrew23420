@@ -1,0 +1,188 @@
+import arcade
+
+
+WIDTH = 1080
+HEIGHT = 768
+
+# start player position in middle of window
+player_x = WIDTH/2
+player_y = HEIGHT/2
+
+# Variables to record if certain keys are being pressed.
+up_pressed = False
+down_pressed = False
+left_pressed = False
+right_pressed = False
+
+#thick = 1
+#e = 0.1
+
+x = 100
+y = 100
+z = 5.5
+n = 5.5
+
+a = 350
+b = 400
+c = 5.5
+d = 5.5
+
+x1 = 500
+y1 = 60
+z1 = 5.5
+n1 = 5.5
+
+counter = 0
+
+def on_update(delta_time):
+    global up_pressed, player_y, player_x, down_pressed, left_pressed, right_pressed, counter, x, y, z, n, a, b, c, d
+    if up_pressed:
+        player_y += 5
+
+    if down_pressed:
+        player_y -= 5
+
+    if left_pressed:
+        player_x -= 5
+
+    if right_pressed:
+        player_x += 5
+
+    global x, y, z, n, a, b, c, d, x1, y1, z1, n1
+    x += z
+    y += n
+    a += c
+    b += d
+    x1 += z1
+    y1 += n1
+
+    if x > 1008 or x < 60:
+        z = z * -1
+    if y > 708 or y < 55:
+        n = n * -1
+
+    if a > 1008 or a < 60:
+        c = c * -1
+    if b > 708 or b < 55:
+        d = d * -1
+
+    if x1 > 1008 or x1 < 60:
+        z1 = z1 * -1
+    if y1 > 708 or y1 < 55:
+        n1 = n1 * -1
+
+    diff_x = abs(a - x)
+    diff_y = abs(b - y)
+    diff_dist = (diff_x ** 2 + diff_y ** 2) ** (1 / 2)
+
+    diff_x1 = abs(x1 - x)
+    diff_y1 = abs(y1 - y)
+    diff_dist1 = (diff_x1 ** 2 + diff_y1 ** 2) ** (1 / 2)
+
+    diff_x2 = abs(x1 - a)
+    diff_y2 = abs(y1 - b)
+    diff_dist2 = (diff_x2 ** 2 + diff_y2 ** 2) ** (1 / 2)
+
+
+
+    if diff_dist <= 60:
+        z = z * -1
+        c = c * -1
+        n = n * -1
+        d = d * -1
+
+    if diff_dist1 <= 60:
+        z = z * -1
+        n = n * -1
+        z1 = z1 * -1
+        n1 = n1 * -1
+
+    if diff_dist2 <= 60:
+        c = c * -1
+        d = d * -1
+        z1 = z1 * -1
+        n1 = n1 * -1
+
+
+    counter += 5
+
+    #thick = thick + e
+    #if thick >= 9:
+    #    e = -0.1
+
+    #if thick <= 2:
+    #   e = 0.1
+
+
+def on_draw():
+    global player_x, player_y, thick
+    arcade.start_render()
+
+    arcade.draw_rectangle_outline(WIDTH/2, HEIGHT/2, 1080, 768, arcade.color.BLACK, 4)
+    arcade.draw_circle_filled(player_x, player_y, 15, arcade.color.BLUE)
+
+    arcade.draw_circle_filled(x, y, 30, arcade.color.BLACK)
+
+    arcade.draw_circle_filled(a, b, 30, arcade.color.BLACK)
+
+    arcade.draw_circle_filled(x1, y1, 30, arcade.color.BLACK)
+
+    arcade.draw_text(str(counter), 100, 100, arcade.color.BLACK, 10)
+
+    #arcade.draw_line(100, 1010, 100, 0, arcade.color.BLACK, thick)
+
+    #arcade.draw_rectangle_outline(100, 100, 50, 50, arcade.color.BLACK, thick)
+
+
+
+def on_key_press(key, modifiers):
+    global up_pressed, left_pressed, right_pressed, down_pressed
+    if key == arcade.key.W:
+        up_pressed = True
+
+    if key == arcade.key.A:
+        left_pressed = True
+
+    if key == arcade.key.S:
+        down_pressed = True
+
+    if key == arcade.key.D:
+        right_pressed = True
+
+
+
+
+def on_key_release(key, modifiers):
+    global up_pressed, left_pressed, right_pressed, down_pressed
+    if key == arcade.key.W:
+        up_pressed = False
+
+    if key == arcade.key.A:
+        left_pressed = False
+
+    if key == arcade.key.S:
+        down_pressed = False
+
+    if key == arcade.key.D:
+        right_pressed = False
+
+def on_mouse_press(x, y, button, modifiers):
+    pass
+
+
+def setup():
+    arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
+    arcade.set_background_color(arcade.color.WHITE)
+    arcade.schedule(on_update, 1/60)
+
+    # Override arcade window methods
+    window = arcade.get_window()
+    window.on_draw = on_draw
+    window.on_key_press = on_key_press
+    window.on_key_release = on_key_release
+
+    arcade.run()
+
+
+if __name__ == '__main__':
+    setup()
