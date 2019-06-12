@@ -1,26 +1,23 @@
 import arcade
 
-
 WIDTH = 700
 HEIGHT = 700
 
-# 0 - arcade.color.WHITE
-# 1 - arcade.color.GREEN
-# 2 - arcade.color.DARK_BLUE
-# 4 - arcade.color.BLUE
-# 8 - arcade.color.BROWN
-# 16 - arcade.color.PURPLE
-# 32 - arcade.color.BLACK
-# 64 - arcade.color.RED
-# 128 - arcade.color.DARK_GREEN
+colors = [
+    [1, arcade.color.WHITE],
+    [2, arcade.color.GREEN],
+    [4, arcade.color.DARK_BLUE],
+    [8, arcade.color.BLUE],
+    [16, arcade.color.BROWN],
+    [32, arcade.color.PURPLE],
+    [64, arcade.color.BLACK],
+    [128, arcade.color.RED],
+    [256, arcade.color.LIGHT_GREEN]]
 
-colors = [arcade.color.WHITE, arcade.color.GREEN, arcade.color.DARK_BLUE, arcade.color.BLUE, arcade.color.BROWN,
-          arcade.color.PURPLE, arcade.color.BLACK, arcade.color.RED, arcade.color.DARK_GREEN]
+global frog_x, frog_y
 
-global Frog_x, Frog_y
-
-Frog_x = 0
-Frog_y = 0
+frog_x = 0
+frog_y = 0
 
 columns = 24
 rows = 16
@@ -30,33 +27,120 @@ y = 0
 
 screen = [[0 for x in range(columns)] for y in range(rows)]
 
-screen[x][y]
-
-square_size = 16
+square_size = 29
 
 up_pressed = False
 
+for x in range(columns):
+    screen[0][x] = 64
+
+for x in range(columns):
+    screen[1][x] = 32
+
+for x in range(columns):
+    screen[2][x] = 64
+
+for x in range(columns):
+    screen[3][x] = 64
+
+for x in range(columns):
+    screen[4][x] = 64
+
+for x in range(columns):
+    screen[5][x] = 64
+
+for x in range(columns):
+    screen[6][x] = 64
+
+for x in range(columns):
+    screen[7][x] = 32
+for x in range(columns):
+    screen[8][x] = 8
+
+for x in range(columns):
+    screen[9][x] = 8
+
+for x in range(columns):
+    screen[10][x] = 8
+
+for x in range(columns):
+    screen[11][x] = 8
+
+for x in range(columns):
+    screen[12][x] = 8
+
+for x in range(columns):
+    print(divmod(x, 4))
+    if x % 4 == 0 or x % 4 == 1:
+        screen[13][x] = 8
+    else:
+        screen[13][x] = 256
+
+for x in range(columns):
+    if x % 4 == 0 or x % 4 == 1:
+        screen[14][x] = 8
+    else:
+        screen[14][x] = 256
+
+for x in range(columns):
+    screen[15][x] = 256
+
+zone = 0
 
 def on_update(delta_time):
-    global up_pressed, screen, frogx, frogy
+    global up_pressed, screen, frog_x, frog_y, square_size, zone
 
     if up_pressed:
-        screen[frogx][frogy] += 128
-
-    for x in range (0,23):
-        for y in range(0, 15):
-            if(screen[x][y] == colors[0]):
-                l_color = arcade.color.WHITE
-            elif arcade.draw_rectangle_filled(x* square_size,y* square_size, l_color):
+        frog_x |= zone
+        zone += float(2**(-zone))
 
 
 def on_draw():
     arcade.start_render()
-\
+    if up_pressed:
+
+        screen[frog_x][frog_y] |= 2
+
+    for x in range(columns):
+        for y in range(rows):
+
+            if screen[y][x] & 0x02:
+                l_color = arcade.color.GREEN
+            elif screen[y][x] & 1:
+                l_color = arcade.color.WHITE
+            elif screen[y][x] & 4:
+                l_color = arcade.color.DARK_BLUE
+            elif screen[y][x] & 8:
+                l_color = arcade.color.BLUE
+            elif screen[y][x] & 16:
+                l_color = arcade.color.BROWN
+            elif screen[y][x] & 32:
+                l_color = arcade.color.PURPLE
+            elif screen[y][x] & 64:
+                l_color = arcade.color.BLACK
+            elif screen[y][x] & 128:
+                l_color = arcade.color.RED
+            elif screen[y][x] & 256:
+                l_color = arcade.color.LIGHT_GREEN
+
+            arcade.draw_rectangle_filled(x * square_size + square_size / 2, y * square_size + square_size / 2,
+                                         square_size, square_size, l_color)
+
+            arcade.draw_rectangle_outline(x * square_size + square_size / 2, y * square_size + square_size / 2,
+                                         square_size, square_size, arcade.color.WHITE)
+
+            arcade.draw_rectangle_outline(frog_x * square_size + square_size / 2, frog_y * square_size + square_size / 2,
+                                          square_size, square_size, arcade.color.WHITE)
+
 
 
 def on_key_press(key, modifiers):
     global up_pressed, left_pressed, right_pressed, down_pressed
+    print(divmod(x, 4))
+    if x % 4 == 0 or x % 4 == 1:
+        screen[13][x] = 8
+    else:
+        screen[13][x] = 256
     if key == arcade.key.W:
         up_pressed = True
 
@@ -92,7 +176,7 @@ def on_mouse_press(x, y, button, modifiers):
 def setup():
     arcade.open_window(WIDTH, HEIGHT, "My Arcade Game")
     arcade.set_background_color(arcade.color.WHITE)
-    arcade.schedule(on_update, 1/60)
+    arcade.schedule(on_update, 1 / 60)
 
     # Override arcade window methods
     window = arcade.get_window()
@@ -106,3 +190,6 @@ def setup():
 
 if __name__ == '__main__':
     setup()
+
+
+
